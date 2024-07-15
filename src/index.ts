@@ -6,9 +6,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 // import morgan from 'morgan';
 import mongoose from 'mongoose';
-import routes from './src/routes/index';
-import { config } from './src/config/config';
-import { errorHandler } from './src/middleware/errorHandler';
+import routes from './routes/index';
+import { config } from './config/config';
+import { errorHandler } from './middleware/errorHandler';
 
 //! Express App
 const app: Application = express();
