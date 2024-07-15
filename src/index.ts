@@ -4,7 +4,7 @@ import { Server as SocketIOServer, Socket } from 'socket.io';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import helmet from 'helmet';
-// import morgan from 'morgan';
+import morgan from 'morgan';
 import mongoose from 'mongoose';
 import routes from './routes/index';
 import { config } from './config/config';
@@ -70,7 +70,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
-// app.use(morgan("common"));
+app.use(morgan("common"));
 
 //! Routes
 app.use('/api', routes);
