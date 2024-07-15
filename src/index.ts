@@ -17,7 +17,7 @@ const server = http.createServer(app); // Create HTTP server
 //! Socket.io Server
 const io: SocketIOServer = new SocketIOServer(server, {
     cors: {
-        origin: ["http://localhost:5173/"],
+        origin: ["http://localhost:5173/", "https://sidekik.netlify.app/"],
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type", "Authorization"]
     }
