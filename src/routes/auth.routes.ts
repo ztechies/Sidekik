@@ -15,7 +15,7 @@ RegisterRouter.post('/register-google-user', validate(registerGoogleUserSchema),
 RegisterRouter.get('/verify-email/:token', authController.verifyEmail)
 RegisterRouter.post('/login', authController.login);
 RegisterRouter.post('/login-google-user', authController.loginGoogleUser)
-RegisterRouter.post('/forgot-password', verifyToken, validate(forgotPasswordSchema), authController.forgotPassword)
-RegisterRouter.post('/recoverPasswordLink', verifyToken, authController.generateRecoverPasswordLink)
+RegisterRouter.post('/forgot-password', validate(forgotPasswordSchema), authController.forgotPassword)
+RegisterRouter.post('/recoverPasswordLink', authController.generateRecoverPasswordLink)
 
 export default RegisterRouter;
