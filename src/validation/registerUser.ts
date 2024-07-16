@@ -16,7 +16,7 @@ export const registerGoogleUserSchema = Joi.object({
     email: Joi.string().email().max(50).required(),
     role: Joi.string().valid('user', 'admin', 'client').default('user'),
     firstName: Joi.string().min(2).max(100).required(),
-    lastName: Joi.string().min(2).max(100).required(),
+    lastName: Joi.string().min(2).max(100),
     security: Joi.object().required(),
     registrationType: Joi.string().valid('google').required(),
     googleId: Joi.string().required()
