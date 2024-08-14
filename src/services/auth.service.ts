@@ -95,12 +95,13 @@ const sendResetPasswordEmail = async (email: string, fname: string, lname: strin
     }
 };
 
-const registerUser = async (user: { email: string, password: string }) => {
+const registerUser = async (user: { email: string, password: string, userName: string }) => {
     const sixDigitNumber = generateRandomNumber(6);
+    const fourDigitNumber = generateRandomNumber(4);
     let session;
 
     try {
-        const { email, password } = user;
+        const { email, password, userName } = user;
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -113,8 +114,10 @@ const registerUser = async (user: { email: string, password: string }) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
+
         const newUser = new User({
             ...user,
+            userName: userName + fourDigitNumber,
             otp: sixDigitNumber,
             password: hashedPassword
         });
@@ -266,7 +269,7 @@ const checkUserName = async (userName: string) => {
 }
 
 
-const updateUser = async (user: UpdateUserSchema, id:string) => {
+const updateUser = async (user: UpdateUserSchema, id: string) => {
     try {
         const existingUser = await User.findById({ _id: id });
         if (!existingUser) {
