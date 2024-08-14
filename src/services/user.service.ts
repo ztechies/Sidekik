@@ -99,7 +99,6 @@ export const verifyUserOtp = async (userId: string, otp: string) => {
       return false;
     }
 
-    console.log(userId, otp, user.otp, "asdasdasdasdsd")
     if (user.otp !== otp) {
       return false;
     }
@@ -109,6 +108,9 @@ export const verifyUserOtp = async (userId: string, otp: string) => {
     }
     await User.findOneAndUpdate({ _id: userId }, { emailVerify: true });
     const token = await generateToken({ user_id: user?._id, role: user?.role }, '24h')
+    console.log(userId, otp, user.otp, "asdasdasdasdsd")
+    console.log(token, "token")
+
     return token;
   } catch (error) {
     console.error("Error verifying OTP:", error);

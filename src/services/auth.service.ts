@@ -119,6 +119,7 @@ const registerUser = async (user: { email: string, password: string, userName: s
             ...user,
             userName: userName + fourDigitNumber,
             otp: sixDigitNumber,
+            otpExpiry: new Date(Date.now() + 10 * 60000),
             password: hashedPassword
         });
 
@@ -202,7 +203,7 @@ const loginUser = async (loginData: LoginUser) => {
             const flag = await bcrypt.compare(loginData.password, userDataFromDB.password);
             if (flag) {
                 const { _id, email, firstName } = userDataFromDB;
-                await User.findByIdAndUpdate(_id, { otp: sixDigitNumber })
+                await User.findByIdAndUpdate(_id, { otp: sixDigitNumber, otpExpiry: new Date(Date.now() + 10 * 60000) })
 
                 const response = await sendOTPEmail(email, firstName, sixDigitNumber);
                 if (response) {
