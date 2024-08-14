@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import authService from '../services/auth.service';
 import { CustomError } from '../middleware/errorHandler';
+import sendResponse from "../utils/sendResponse";
+import httpStatus from "http-status";
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -49,7 +51,9 @@ const registerUser = async (req: Request, res: Response, next: NextFunction) => 
 
     try {
         const response = await authService.registerUser(req.body)
-        res.status(200).json({ user: response, error: false })
+        if (response) {
+            return sendResponse(res, httpStatus.CREATED, response, "User Registered Successfully", true);
+        }
     } catch (error: unknown) {
         next(error);
     }
@@ -77,7 +81,7 @@ const registerGoogleUser = async (req: Request, res: Response, next: NextFunctio
 const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const response = await authService.loginUser(req.body)
-        res.status(200).json({ token: response?.jwtToken, isVerify: response?.emailVerify, error: false })
+        res.status(200).json({ token: response?.jwtToken, userId: response?.userId, isVerify: response?.emailVerify, error: false })
     } catch (error) {
         next(error)
     }

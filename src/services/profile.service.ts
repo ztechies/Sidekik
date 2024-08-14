@@ -87,16 +87,13 @@ const addProfile = async (profile: AddProfileSchema) => {
     }
 };
 
-const updateProfile = async (profile: UpdateProfileSchema) => {
+const updateProfile = async (profile: UpdateProfileSchema, id: string) => {
     try {
-
-        const { userId } = profile;
-
-        const existingProfile = await Profile.findOne({ userId });
+        const existingProfile = await Profile.findOne({ userId: id });
         if (!existingProfile) {
             throw new CustomError("Profile does not exist", 400);
         }
-        const updatedProfile = await Profile.updateOne({ userId }, profile);
+        const updatedProfile = await Profile.updateOne({ userId: id }, profile);
 
         if (updatedProfile) {
             return 'Profile Updated Successfully';

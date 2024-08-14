@@ -66,7 +66,6 @@ export const updateProfile = async (req: Request, res: Response, next: NextFunct
         } = req.body;
 
         const userData = {
-            userId,
             profileImage,
             firstName,
             lastName,
@@ -75,7 +74,6 @@ export const updateProfile = async (req: Request, res: Response, next: NextFunct
         }
 
         const profileData = {
-            userId,
             primaryService,
             otherService,
             country,
@@ -91,11 +89,11 @@ export const updateProfile = async (req: Request, res: Response, next: NextFunct
         }
 
         if (profileImage || firstName || lastName || mobile || userName) {
-            const response = await authService.updateUser(userData)
+            const response = await authService.updateUser(userData, userId)
         }
 
         if (primaryService || otherService || country || city || languages || usePlatformAs || business || socialLinks || shortIntro || longIntro || clientCountries) {
-            const response = await profileService.updateProfile(profileData)
+            const response = await profileService.updateProfile(profileData, userId)
         }
 
         const profileStatus = await getProfileStatusById(userId)

@@ -1,5 +1,11 @@
 import Joi from 'joi';
 
+const countrySchema = Joi.object({
+    id: Joi.number().required(),
+    name: Joi.string().required(),
+    code: Joi.string().length(2).required() // Assuming country code is always 2 characters long
+});
+
 export const addProfileSchema = {
     body: Joi.object().keys({
         userId: Joi.string().required(),
@@ -57,7 +63,7 @@ export const updateProfileSchema = {
             longIntro: Joi.string().optional(),
             primaryService: Joi.array().items(Joi.string()).optional(),
             otherService: Joi.array().items(Joi.string()).optional(),
-            clientCountries: Joi.array().items(Joi.string()).optional()
+            clientCountries: Joi.array().items(countrySchema).optional(),
         })
         .min(1),
 };

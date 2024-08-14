@@ -5,6 +5,12 @@ interface Business {
     address?: string;
 }
 
+interface ClientCountries {
+    id: number;
+    name: string;
+    code: string;
+}
+
 interface SocialLink {
     platform: 'Facebook' | 'Twitter' | 'Instagram' | 'LinkedIn' | 'Other';
     url: string;
@@ -23,7 +29,6 @@ export interface AddProfileSchema {
 }
 
 export interface UpdateProfileSchema {
-    userId?: string;
     country?: string;
     state?: string;
     city?: string;
@@ -35,6 +40,6 @@ export interface UpdateProfileSchema {
     usePlatformAs?: ['business', 'individual'] | any,
     primaryService?: string[];
     otherService?: string[];
-    clientCountries?: string[];
+    clientCountries?: ClientCountries[];
 }
 

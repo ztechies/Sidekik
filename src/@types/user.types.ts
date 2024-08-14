@@ -7,6 +7,8 @@ export type User = {
     role: Role,
     password: string,
     registrationType: string
+    otp: number,
+    otpExpiry: Date
 }
 
 export type GoogleUser = {
@@ -32,7 +34,6 @@ export type ResetPassword = {
 }
 
 export interface UpdateUserSchema {
-    userId: string;
     firstName: string;
     lastName: string;
     profileImage: string;

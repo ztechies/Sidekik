@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken"
 import { config } from "../config/config";
 import { generateToken, sendEmail } from "../utils/helper";
 import mongoose from "mongoose";
+import generateRandomNumber from "../utils/generateRandomNumber";
 
 const fromEmail = config.sendGrid.emailFrom;
 
@@ -20,6 +21,29 @@ const verifyToken = async (token: string) => {
     return user;
 };
 
+const sendOTPEmail = async (email: string, name: string, otp: number | undefined) => {
+    try {
+        const message = {
+            to: email,
+            from: {
+                name: "Sidekik",
+                email: fromEmail,
+            },
+            templateId: "d-8903ff1c24b54cdfb5ed2082fd4e5235",
+            dynamicTemplateData: {
+                name,
+                otp: otp
+            },
+        };
+
+        const response = await sendEmail(message);
+        if (response) {
+            return response
+        }
+    } catch (error) {
+        throw error
+    }
+};
 
 const sendVerificationEmail = async (email: string, userName: string, token: string | undefined) => {
     try {
@@ -46,6 +70,7 @@ const sendVerificationEmail = async (email: string, userName: string, token: str
     }
 };
 
+
 const sendResetPasswordEmail = async (email: string, fname: string, lname: string) => {
     try {
         const message = {
@@ -71,7 +96,8 @@ const sendResetPasswordEmail = async (email: string, fname: string, lname: strin
 };
 
 const registerUser = async (user: { email: string, password: string }) => {
-    let session; // Declare a session object for transaction
+    const sixDigitNumber = generateRandomNumber(6);
+    let session;
 
     try {
         const { email, password } = user;
@@ -81,7 +107,6 @@ const registerUser = async (user: { email: string, password: string }) => {
             throw new CustomError("User already exists", 400);
         }
 
-        // Start a MongoDB transaction (if supported by your database)
         session = await mongoose.startSession();
         session.startTransaction();
 
@@ -90,6 +115,7 @@ const registerUser = async (user: { email: string, password: string }) => {
 
         const newUser = new User({
             ...user,
+            otp: sixDigitNumber,
             password: hashedPassword
         });
 
@@ -99,25 +125,21 @@ const registerUser = async (user: { email: string, password: string }) => {
             throw new CustomError("Failed to save user", 500);
         }
 
-        let verificationToken = await generateToken({ user_id: savedUser._id, role: savedUser.role }, '15m');
-        const response = await sendVerificationEmail(email, newUser.userName, verificationToken);
+        const response = await sendOTPEmail(email, newUser.firstName, sixDigitNumber);
 
         if (!response) {
-            // Rollback transaction: delete the user
             await session.abortTransaction();
             session.endSession();
             throw new CustomError("Failed to send verification email", 500);
         }
 
-        // Commit transaction if everything is successful
         await session.commitTransaction();
         session.endSession();
 
-        return "User Registered Successfully";
+        return savedUser._id
 
     } catch (error) {
         if (session) {
-            // If an error occurred, abort the transaction and end the session
             await session.abortTransaction();
             session.endSession();
         }
@@ -153,12 +175,8 @@ const registerGoogleUser = async (user: GoogleUser) => {
         const savedUser = await newUser.save();
 
         if (savedUser) {
-            const response = await sendVerificationEmail(email, newUser.userName, undefined);
-
-            if (response) {
-                const jwtToken = await generateToken({ user_id: savedUser._id, role: savedUser.role }, '24h');
-                return jwtToken;
-            }
+            const jwtToken = await generateToken({ user_id: savedUser._id, role: savedUser.role }, '24h');
+            return jwtToken;
         }
     } catch (error) {
         throw error;
@@ -167,6 +185,7 @@ const registerGoogleUser = async (user: GoogleUser) => {
 
 const loginUser = async (loginData: LoginUser) => {
     try {
+        const sixDigitNumber = generateRandomNumber(6);
         const userDataFromDB = await User.findOne({ email: loginData.email });
         if (userDataFromDB != null && userDataFromDB.password != null && loginData.role === userDataFromDB.role && userDataFromDB.registrationType === "form" && userDataFromDB.emailVerify === true) {
             const flag = await bcrypt.compare(loginData.password, userDataFromDB.password);
@@ -179,11 +198,12 @@ const loginUser = async (loginData: LoginUser) => {
         } else if (userDataFromDB != null && userDataFromDB.password != null && userDataFromDB.emailVerify === false) {
             const flag = await bcrypt.compare(loginData.password, userDataFromDB.password);
             if (flag) {
-                let jwtToken = await generateToken({ user_id: userDataFromDB._id, role: userDataFromDB.role }, '24h');
-                const { email, userName } = userDataFromDB;
-                const response = await sendVerificationEmail(email, userName, jwtToken);
+                const { _id, email, firstName } = userDataFromDB;
+                await User.findByIdAndUpdate(_id, { otp: sixDigitNumber })
+
+                const response = await sendOTPEmail(email, firstName, sixDigitNumber);
                 if (response) {
-                    return ({ jwtToken, emailVerify: false });
+                    return ({ userId: userDataFromDB._id, emailVerify: false });
                 }
             } else {
                 throw new CustomError("Password Not Match", 401);
@@ -246,16 +266,14 @@ const checkUserName = async (userName: string) => {
 }
 
 
-const updateUser = async (user: UpdateUserSchema) => {
+const updateUser = async (user: UpdateUserSchema, id:string) => {
     try {
-        const { userId } = user;
-
-        const existingUser = await User.findById({ _id: userId });
+        const existingUser = await User.findById({ _id: id });
         if (!existingUser) {
             throw new CustomError("User does not exist", 400);
         }
 
-        const updatedUser = await User.findByIdAndUpdate({ _id: userId }, user, { new: true });
+        const updatedUser = await User.findByIdAndUpdate({ _id: id }, user, { new: true });
 
         if (updatedUser) {
             return 'User Updated Successfully';

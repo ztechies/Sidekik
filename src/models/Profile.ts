@@ -17,6 +17,12 @@ const citySchema = new mongoose.Schema({
     name: { type: String, required: true }
 }, { _id: false });
 
+const clientCountries = new mongoose.Schema({
+    id: { type: Number, required: true },
+    name: { type: String, required: true },
+    code: { type: String, required: true }
+}, { _id: false });
+
 const socialLinkSchema = new mongoose.Schema({
     platform: {
         type: String,
@@ -64,7 +70,7 @@ const profileSchema = new mongoose.Schema(
         shortIntro: { type: String },
         longIntro: { type: String },
         clientCountries: {
-            type: [{ type: String }],
+            type: [clientCountries],
             default: undefined
         },
     },

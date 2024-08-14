@@ -35,6 +35,8 @@ const userSchema = new mongoose.Schema(
             ipAddress: { type: String },
             dateAndTime: { type: String }
         },
+        otp: { type: String },
+        otpExpiry: { type: Date },
         timezone: { type: String }
     },
     { timestamps: true }
