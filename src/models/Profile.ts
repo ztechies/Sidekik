@@ -41,12 +41,18 @@ const socialLinkSchema = new mongoose.Schema({
 const profileSchema = new mongoose.Schema(
     {
         userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', unique: true },
-        primaryService: {
-            type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Service', unique: true }]
-        },
-        otherService: {
-            type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Service', unique: true }]
-        },
+        primaryService: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Service',
+            unique: true,
+            default: null
+        }],
+        otherService: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Service',
+            unique: true,
+            default: null
+        }],
         country: { type: countrySchema, default: undefined },
         state: { type: stateSchema, default: undefined },
         city: { type: citySchema, default: undefined },
