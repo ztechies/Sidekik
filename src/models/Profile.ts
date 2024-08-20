@@ -42,12 +42,10 @@ const profileSchema = new mongoose.Schema(
     {
         userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', unique: true },
         primaryService: {
-            type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Service', unique: true }],
-            default: undefined
+            type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Service', unique: true }]
         },
         otherService: {
-            type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Service', unique: true, default: undefined }],
-            default: undefined
+            type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Service', unique: true }]
         },
         country: { type: countrySchema, default: undefined },
         state: { type: stateSchema, default: undefined },
