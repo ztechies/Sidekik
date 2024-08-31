@@ -18,6 +18,6 @@ export const createChargesSchema = Joi.object({
     receipt_email: Joi.string().required(),
     amount: Joi.string().required(),
     // currency: Joi.string().optional(),
-    card: Joi.string().required(),
-    customer: Joi.string().required(),
+    card_id: Joi.string().required(),
+    customer_id: Joi.string().required(),
 });

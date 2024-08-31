@@ -1,4 +1,17 @@
+import { required } from "joi";
 import mongoose from "mongoose";
+
+
+const subscriptionSchema = new mongoose.Schema({
+    sessionId: { type: String, default: null } as any,
+    planId: { type: String, required: true },
+    planType: { type: String, required: true },
+    planStartDate: { type: Date, required: true } as any,
+    planEndDate: { type: Date, required: true } as any,
+    planDuration: { type: Number, required: true },
+}, { _id: false });
+
+
 
 const userSchema = new mongoose.Schema(
     {
@@ -37,7 +50,8 @@ const userSchema = new mongoose.Schema(
         },
         otp: { type: String },
         otpExpiry: { type: Date },
-        timezone: { type: String }
+        timezone: { type: String },
+        subscription: { type: subscriptionSchema, default: undefined }
     },
     { timestamps: true }
 );

@@ -315,7 +315,7 @@ const generateRecoverPasswordLink = async ({ email, role }: { email: string, rol
         const user = await User.findOne({ email });
 
         if (!user || user.registrationType == "google" || user.role != role) {
-            throw new CustomError("User not found", 404);
+            throw new CustomError("User not Exist", 404);
         }
 
         const jwtToken = await generateToken({ email, role: user.role }, '15m')
@@ -356,11 +356,11 @@ const resetPassword = async (data: ResetPassword) => {
         const userDataFromDB = await User.findById(userId).session(session);
 
         if (!userDataFromDB) {
-            throw new CustomError("User not Exist!", 400);
+            throw new CustomError("User not Exist", 400);
         }
 
         if (userDataFromDB.registrationType !== "form" || !userDataFromDB.emailVerify) {
-            throw new CustomError("User registration type or email verification is not valid", 400);
+            throw new CustomError("User not Exist", 400);
         }
 
         if (!userDataFromDB.password) {
