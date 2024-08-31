@@ -21,6 +21,16 @@ const getPackageById = async (id: string) => {
     }
 }
 
+const getPackageByUserId = async (userId: string) => {
+    try {
+        console.log("userId", userId);
+
+        return await Package.find({ userId });
+    } catch (error) {
+        throw error
+    }
+}
+
 const addPackage = async (packages: AddPackage) => {
 
     try {
@@ -52,14 +62,14 @@ const addPackage = async (packages: AddPackage) => {
 const updatePackage = async (id: string, packages: UpdatePackage) => {
 
     try {
- 
+
         const existingPackage = await Package.findById(id);
         if (!existingPackage) {
             throw new CustomError("Package does not exist", 400);
         }
 
-        const updatePackage = await Package.findByIdAndUpdate(id, packages,{ new: true });
-        
+        const updatePackage = await Package.findByIdAndUpdate(id, packages, { new: true });
+
         if (!updatePackage) {
             throw new CustomError("Failed to update Package", 500);
         }
@@ -73,16 +83,19 @@ const updatePackage = async (id: string, packages: UpdatePackage) => {
 
 const deletePackage = async (id: string) => {
     try {
-        const existingid = await Package.findById(id);
-        if (!existingid) {
-            throw new CustomError("Package does not exists", 400)
+        const existingPackage = await Package.findById(id);
+        if (!existingPackage) {
+            throw new CustomError("Package does not exist", 400);
         }
 
-        const deletePackage = await Package.findByIdAndDelete(id);
-        return deletePackage;
+        // Use the soft delete method provided by mongoose-delete
+        await existingPackage.delete();
+
+        return existingPackage;
     } catch (error) {
         throw error;
     }
-}
+};
 
-export default { getAllPackage, addPackage, updatePackage, deletePackage, getPackageById }
+
+export default { getAllPackage, addPackage, updatePackage, deletePackage, getPackageById, getPackageByUserId }

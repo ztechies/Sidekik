@@ -6,13 +6,13 @@ import { config } from '../config/config';
 let gfs: any, gridFsBucket: any;
 const conn = mongoose.connection;
 
-// conn.once('open', () => {
-//     gridFsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
-//         bucketName: 'photos'
-//     });
-//     gfs = grid(conn.db, mongoose.mongo);
-//     gfs.collection('photos');
-// });
+conn.once('open', () => {
+    gridFsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
+        bucketName: 'photos'
+    });
+    gfs = grid(conn.db, mongoose.mongo);
+    gfs.collection('photos');
+});
 
 const url = config.frontEndUrl.url;
 

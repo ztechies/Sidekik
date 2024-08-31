@@ -1,18 +1,35 @@
-import mongoose, { Schema } from "mongoose";
+// import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from 'mongoose';
+import MongooseDelete, { SoftDeleteDocument } from 'mongoose-delete';
+
+interface IPackage extends Document, SoftDeleteDocument {
+    serviceId: Schema.Types.ObjectId;
+    userId: Schema.Types.ObjectId;
+    title: string;
+    subTitle: string;
+    packageType: 'standard' | 'custom';
+    price: number;
+    duration: string;
+    inclusions: string;
+    isPopular: boolean;
+    milestones: typeof milestoneSchema[];
+}
 
 const milestoneSchema = new mongoose.Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
     percentage: { type: Number, required: true },
-    when: { type: String, 
+    when: {
+        type: String,
         // required: true
-     },
+    },
     // dueDate: { type: Date, required: true },
-    completed: { type: Boolean, 
+    completed: {
+        type: Boolean,
         // default: false 
     },
     isDeleted: { type: Boolean, default: false }
-});
+}, { _id: false });
 
 const packagesSchema = new mongoose.Schema({
     serviceId: { type: Schema.Types.ObjectId, ref: "Service", required: true },
@@ -24,9 +41,10 @@ const packagesSchema = new mongoose.Schema({
     duration: { type: String, required: true },
     inclusions: { type: String, required: true },
     isPopular: { type: Boolean, required: true },
-    milestones: {type: [milestoneSchema]}
+    milestones: { type: [milestoneSchema] }
 },
     { timestamps: true }
 );
-const Packages = mongoose.model('Packages', packagesSchema);
+packagesSchema.plugin(MongooseDelete, { deletedAt: true, overrideMethods: true });
+const Packages = mongoose.model<IPackage>('Packages', packagesSchema);
 export default Packages;

@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
-import { addPackage, updatePackage, getPackage, deletePackage, getPackageById } from '../controllers/package.controller';
+import { addPackage, updatePackage, getPackage, deletePackage, getPackageById, getPackageByUserId } from '../controllers/package.controller';
 // import { validate } from '../middleware/validator'; 
-import validate from '../middleware/validate'; 
+import validate from '../middleware/validate';
 
 import { addPackageSchema, updatePackageSchema } from '../validation/package';
 import { verifyToken } from '../middleware/verifyToken';
@@ -23,5 +23,9 @@ router
     .get(getPackageById)
     .patch(verifyToken, validate(updatePackageSchema), updatePackage)
     .delete(verifyToken, deletePackage)
+
+router
+    .route('/userId/:userId')
+    .get(verifyToken, getPackageByUserId)
 
 export default router;

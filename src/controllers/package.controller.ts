@@ -20,6 +20,16 @@ export const getPackageById = async (req: Request, res: Response, next: NextFunc
     }
 }
 
+export const getPackageByUserId = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { userId } = req.params;
+        const packages = await packageService.getPackageByUserId(userId);
+        res.status(200).json({ package: packages, error: false })
+    } catch (err: unknown) {
+        next(err)
+    }
+}
+
 export const addPackage = async (req: Request, res: Response, next: NextFunction) => {
 
     try {

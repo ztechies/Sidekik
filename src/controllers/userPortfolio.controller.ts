@@ -46,7 +46,8 @@ export const addUserPortfolio = async (req: Request, res: Response, next: NextFu
 export const updateUserPortfolio = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const response = await userPortfolioService.updateUserPortfolio(req.body)
+        const { profileId } = req.params;
+        const response = await userPortfolioService.updateUserPortfolio(req.body, profileId)
         res.status(200).json({ userPortfolio: response, error: false })
     } catch (error: unknown) {
         next(error);

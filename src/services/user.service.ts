@@ -60,7 +60,6 @@ const sendOTPEmail = async (email: string, name: string, otp: number | undefined
 
 export const updateUserOtp = async (userId: string, otp: number, otpExpiry: Date) => {
   try {
-    console.log("in.");
 
     const user = await User.findOne({ _id: userId });
 
@@ -108,9 +107,6 @@ export const verifyUserOtp = async (userId: string, otp: string) => {
     }
     await User.findOneAndUpdate({ _id: userId }, { emailVerify: true });
     const token = await generateToken({ user_id: user?._id, role: user?.role }, '24h')
-    console.log(userId, otp, user.otp, "asdasdasdasdsd")
-    console.log(token, "token")
-
     return token;
   } catch (error) {
     console.error("Error verifying OTP:", error);

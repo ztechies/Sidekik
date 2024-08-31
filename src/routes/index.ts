@@ -7,7 +7,7 @@ import termsOfUseRouter from './termsOfUse.routes'
 import userLicense from './userLicense.routes'
 import ConversationRouter from './conversation.routes';
 import MessageRouter from './message.routes';
-// import FileRouter from './file.routes';
+import FileRouter from './file.routes';
 import ActivePolicyRouter from './activePolicy.routes';
 import SubscriptionRouter from './subscription.routes';
 import ServiceRouter from './service.routes';
@@ -36,28 +36,28 @@ const router = express.Router();
 // router.use('/payment', PaymentRouter)
 
 const defaultRoutes = [
-  { path: '/auth', route: AuthRouter },
-  { path: '/email', route: EmailRouter },
-  { path: '/sms', route: SmsRouter },
-  { path: '/policy', route: policyRouter },
-  { path: '/terms-of-use', route: termsOfUseRouter },
-  { path: '/license', route: userLicense },
-  { path: '/conversation', route: ConversationRouter },
-  { path: '/active-policy', route: ActivePolicyRouter },
-  { path: '/message', route: MessageRouter },
-  // { path: '/file', route: FileRouter },
-  { path: '/subscription', route: SubscriptionRouter },
-  { path: '/service', route: ServiceRouter },
-  { path: '/package', route: PackageRouter },
-  { path: '/user-portfolio', route: userPortfolio },
-  { path: '/profile', route: ProfileRouter },
-  { path: '/payment', route: PaymentRouter },
-  // { path: '/upload', route: uploadRouter },
+    { path: '/auth', route: AuthRouter },
+    { path: '/email', route: EmailRouter },
+    { path: '/sms', route: SmsRouter },
+    { path: '/policy', route: policyRouter },
+    { path: '/terms-of-use', route: termsOfUseRouter },
+    { path: '/license', route: userLicense },
+    { path: '/conversation', route: ConversationRouter },
+    { path: '/active-policy', route: ActivePolicyRouter },
+    { path: '/message', route: MessageRouter },
+    { path: '/file', route: FileRouter },
+    { path: '/subscription', route: SubscriptionRouter },
+    { path: '/service', route: ServiceRouter },
+    { path: '/package', route: PackageRouter },
+    { path: '/user-portfolio', route: userPortfolio },
+    { path: '/profile', route: ProfileRouter },
+    { path: '/payment', route: PaymentRouter },
+    // { path: '/upload', route: uploadRouter },
 ];
 
 // Registering routes
 defaultRoutes.forEach((route) => {
-  router.use(route.path, route.route);
-});
+    router.use(route.path, route.route);
+  });
 
 export default router;

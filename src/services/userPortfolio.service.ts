@@ -31,11 +31,12 @@ const getUserPortfolioById = async (id: any) => {
     }
 };
 
-const getPortfolioByProfileId = async (id: any) => {
+const getPortfolioByProfileId = async (profileId: string) => {
     try {
-        const userPortfolio = await UserPortfolio.findOne({ profileId: id });
+        let userPortfolio = await UserPortfolio.findOne({ profileId });
         if (!userPortfolio) {
-            throw new CustomError("User Portfolio Not found with given ID", 400)
+            userPortfolio = new UserPortfolio({ profileId })
+            await userPortfolio.save()
         }
         return userPortfolio
     } catch (error) {
@@ -88,28 +89,23 @@ const addUserPortfolio = async (portfolio: AddUserPortfolio) => {
 };
 
 
-const updateUserPortfolio = async (portfolio: UpdateUserPortfolio) => {
+const updateUserPortfolio = async (portfolio: UpdateUserPortfolio, profileId: string) => {
     const session = await mongoose.startSession();
     session.startTransaction();
 
     try {
-        const id = portfolio.id;
-        const dataToBeUpdated: any = portfolio;
 
-        delete dataToBeUpdated.id;
-
-        const existingPortfolio = await UserPortfolio.findById(id).session(session);
+        const existingPortfolio = await UserPortfolio.findOne({ profileId }).session(session);
         if (!existingPortfolio) {
             throw new CustomError("User portfolio does not exist", 400);
         }
 
-        const existingProfile = await Profile.findById(existingPortfolio.profileId).session(session);
+        const existingProfile = await Profile.findById(profileId).session(session);
         if (!existingProfile) {
             throw new CustomError("User profile does not exist", 400);
         }
 
-
-        const updatedPortfolio = await UserPortfolio.findByIdAndUpdate({ _id: id }, { ...dataToBeUpdated });
+        const updatedPortfolio = await UserPortfolio.updateOne({ profileId }, { ...portfolio });
 
         if (!updatedPortfolio) {
             throw new CustomError("Failed to update user portfolio", 500);

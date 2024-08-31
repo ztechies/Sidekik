@@ -11,7 +11,7 @@ userPortfolio.get('/', verifyToken, getAllUserPortfolios)
 userPortfolio.get('/profile-id/:profileId', getPortfolioByProfileId)
 userPortfolio.get('/:id', verifyToken, getUserPortfolioById)
 userPortfolio.post('/', validate(addUserPortfolioSchema), addUserPortfolio)
-userPortfolio.patch('/', validate(updateUserPortfolioSchema), updateUserPortfolio)
+userPortfolio.patch('/:profileId', validate(updateUserPortfolioSchema), updateUserPortfolio)
 userPortfolio.delete('/:id', verifyToken, deleteUserPortfolio)
 
 export default userPortfolio;
